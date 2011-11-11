@@ -77,9 +77,12 @@ void draw() {
   if (userSplit == true) {
     myVideo1.image(gl, -width / 2 - 5, 0, width, height);
     myVideo2.image(gl, width / 2 + 5, 0, width, height);
+    myVideo1.loop();
+    myVideo2.loop();
   } 
   else {
     myVideo1.image(gl, 0, 0, width, height);
+    myVideo1.loop();
   }
   pgl.endGL();
 }
@@ -88,6 +91,9 @@ void draw() {
 
 //OSC Event
 void oscEvent(OscMessage theOscMessage) {
+
+  println(theOscMessage.addrPattern());
+  println(theOscMessage.typetag());
 
   //Check address pattern for /VID
   if (theOscMessage.checkAddrPattern("/VID") == true) {
