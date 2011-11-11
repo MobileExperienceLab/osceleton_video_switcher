@@ -44,6 +44,9 @@ void setup() {
   oscP5.plug(this,"video_switch","/VID");
 }
 
+public void draw(){
+}
+
 public void video_switch(int usr, int v, int ph){
 	println("### received an osc message.");
 	println(" 3 ints received: "+usr+", "+v+", "+ph);
@@ -52,4 +55,18 @@ public void video_switch(int usr, int v, int ph){
 public void video_switch(int usr1, int v1, int usr2, int v2, int ph){
 	println("### received an osc message.");
 	println(" 6 ints received: "+usr1+", "+v1+", "+usr2+", "+v2+", "+ph);
+}
+
+void oscEvent(OscMessage theOscMessage) {
+  /* with theOscMessage.isPlugged() you check if the osc message has already been
+   * forwarded to a plugged method. if theOscMessage.isPlugged()==true, it has already 
+   * been forwared to another method in your sketch. theOscMessage.isPlugged() can 
+   * be used for double posting but is not required.
+  */  
+  if(theOscMessage.isPlugged()==false) {
+  /* print the address pattern and the typetag of the received OscMessage */
+  println("### received an osc message.");
+  println("### addrpattern\t"+theOscMessage.addrPattern());
+  println("### typetag\t"+theOscMessage.typetag());
+  }
 }
