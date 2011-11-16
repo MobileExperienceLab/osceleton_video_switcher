@@ -56,10 +56,10 @@ void setup() {
 
   //Make multiple movie objects from file names pulled from .csv, load movie objects into array
   for (int i = 0; i < rowNum; i++) {
-    movie[i] = new GSMovie(this, videos.getString(i, 0));
+  	movie[i] = new GSMovie(this, videos.getString(i, 0));
 
-    //Pause video objects in the background
-    movie[i].pause();
+  	//Pause video objects in the background
+  	movie[i].pause();
   }
 
   /* start oscP5, listening */
@@ -91,7 +91,7 @@ void setup() {
 public void draw() {
   background(0);
 
-  if (users == true) {
+  if (users) {
     image(movie[playing], -width/2-2, 0, width, height);
     image(movie[playing2], width/2+2, 0, width, height);
   }
@@ -106,7 +106,7 @@ public void movieEvent(GSMovie mov) {
 }
 
 //receive OSC messages from OSCeleton Kinect
-public void video_switch(int usr, int v, int ph) {
+public void video_switch(int usr, int v, float ph) {
 
   users = false;
 
