@@ -35,75 +35,70 @@ int colNum; //Not in use
 
 
 void setup() {
+	size(720, 480, GLConstants.GLGRAPHICS);
+	frameRate(30);
+	
+	videos = new videoTable("videos.csv");
+	rowNum = videos.getRowCount();
 
-  size(720, 480, GLConstants.GLGRAPHICS);
+	movie = new GSMovie[rowNum];
 
-  videos = new videoTable("videos.csv");
-  rowNum = videos.getRowCount();
+	//Make multiple movie objects from file names pulled from .csv, load movie objects into array
+	for (int i = 0; i < rowNum; i++) {
+		movie[i] = new GSMovie(this, videos.getString(i, 0));
+    
+		//Pause video objects in the background
+		movie[i].pause();
+	}
 
-  movie = new GSMovie[rowNum];
+	/* start oscP5, listening */
+	oscP5 = new OscP5(this, osc_port);
 
-  //Make multiple movie objects from file names pulled from .csv
-  for (int i = 0; i < rowNum; i++) {
-    movie[i] = new GSMovie(this, videos.getString(i, 0));
-    //movie[i].loop();
+	/* myRemoteLocation is a NetAddress. a NetAddress takes 2 parameters,
+	 	 * an ip address and a port number. myRemoteLocation is used as parameter in
+	 	 * oscP5.send() when sending osc packets to another computer, device, 
+	 	 * application. usage see below. for testing purposes the listening port
+	 	 * and the port of the remote location address are the same, hence you will
+	 	 * send messages back to this sketch.
+	 	 */
+	myRemoteLocation = new NetAddress("127.0.0.1", osc_port);
 
-    println(movie[i]);
-    println(videos.getString(i, 0));
-  }
-
-  // Start Playing a movie
-  //movie[1].play();
-  //	movie = new GSMovie(this, vids[0]);
-
-  /* start oscP5, listening */
-  oscP5 = new OscP5(this, osc_port);
-
-  /* myRemoteLocation is a NetAddress. a NetAddress takes 2 parameters,
-   	 * an ip address and a port number. myRemoteLocation is used as parameter in
-   	 * oscP5.send() when sending osc packets to another computer, device, 
-   	 * application. usage see below. for testing purposes the listening port
-   	 * and the port of the remote location address are the same, hence you will
-   	 * send messages back to this sketch.
-   	 */
-  myRemoteLocation = new NetAddress("127.0.0.1", osc_port);
-
-  /* osc plug service
-   	 * osc messages with a specific address pattern can be automatically
-   	 * forwarded to a specific method of an object. in this example 
-   	 * a message with address pattern /test will be forwarded to a method
-   	 * test(). below the method test takes 2 arguments - 2 ints. therefore each
-   	 * message with address pattern /test and typetag ii will be forwarded to
-   	 * the method test(int theA, int theB)
-   	 */
-  oscP5.plug(this, "video_switch", "/VID");
+	/* osc plug service
+	 	 * osc messages with a specific address pattern can be automatically
+	 	 * forwarded to a specific method of an object. in this example 
+	 	 * a message with address pattern /test will be forwarded to a method
+	 	 * test(). below the method test takes 2 arguments - 2 ints. therefore each
+	 	 * message with address pattern /test and typetag ii will be forwarded to
+	 	 * the method test(int theA, int theB)
+	 	 */
+	oscP5.plug(this, "video_switch", "/VID");
 }
 
 public void draw() {
-  //  	movie[1].play();
-  //	movie[1].loop();
-
-  image(movie[playing], 0, 0, width, height);
+	image(movie[playing], 0, 0, width, height);
 }
 
+//Generic read movie method to read GSVideo objects
 public void movieEvent(GSMovie mov) {
-  mov.read();
+	mov.read();
 }
 
+//receive OSC messages from OSCeleton Kinect
 public void video_switch(int usr, int v, int ph) {
-  println("### received an osc message.");
-  println(" 3 ints received: "+usr+", "+v+", "+ph);
+	//pause previous videos in the background
+	movie[playing].pause();
+	println("### received an osc message.");
+	println(" 3 ints received: "+usr+", "+v+", "+ph);
 
-  playing = v;
-  movie[v].loop();
-
-  //return playing;
-  //println("play");
-  //	movie = new GSMovie(this, vids[0]);
+	//This sets the array id and sends to global var playing
+	playing = v;
+	
+	//tell the current movie to play as a loop
+	movie[v].loop();
 }
 
 public void video_switch(int usr1, int v1, int usr2, int v2, int ph) {
-  println("### received an osc message.");
-  println(" 6 ints received: "+usr1+", "+v1+", "+usr2+", "+v2+", "+ph);
+	println("### received an osc message.");
+	println(" 6 ints received: "+usr1+", "+v1+", "+usr2+", "+v2+", "+ph);
 }
 
