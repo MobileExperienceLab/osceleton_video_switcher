@@ -116,16 +116,13 @@ public void video_switch(int usr, int v, float ph) {
   println(" 3 ints received: "+usr+", "+v+", "+ph);
 
   //This sets the array id and sends to global var playing
-  playing = v;
-
-  float playhead = ph / 10; 
+  playing = v; 
   //tell the current movie to play as a loop
   movie[v].loop();
-  movie[v].jump(playhead);
-  println(playhead);
+  movie[v].jump(ph);
 }
 
-public void video_switch(int usr1, int v1, int usr2, int v2, int ph) {
+public void video_switch(int usr1, int v1, int usr2, int v2, float ph) {
 
   users = true;
   println(users);
@@ -137,8 +134,6 @@ public void video_switch(int usr1, int v1, int usr2, int v2, int ph) {
   println("### received an osc message.");
   println(" 6 ints received: "+usr1+", "+v1+", "+usr2+", "+v2+", "+ph);
 
-  float playhead = ph / 10;
-  //float playhea2 = ph / 10; 
 
   playing = v1;
   playing2 = v2;
@@ -146,9 +141,7 @@ public void video_switch(int usr1, int v1, int usr2, int v2, int ph) {
   movie[v1].loop();
   movie[v2].loop();
 
-  movie[v1].jump(playhead);
-  movie[v2].jump(playhead);
-
-  println(playhead);
+  movie[v1].jump(ph);
+  movie[v2].jump(ph);
 }
 
